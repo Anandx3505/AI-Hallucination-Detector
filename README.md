@@ -36,6 +36,7 @@ Retrieval-Augmented Generation
 
 Anand Chaudhary: 1)[Lookback Lens](https://arxiv.org/pdf/2407.07071): Detecting and Mitigating Contextual Hallucinations in
 Large Language Models Using Only Attention Maps.
+                 2)A [Comprehensive Survey of Hallucination](https://arxiv.org/pdf/2405.09589) in Large Language, Image, Video and Audio Foundation Models
 
 
 Arnav Sharma: 1)[A Survey on Hallucination in Large Language Models](https://arxiv.org/pdf/2311.05232):
