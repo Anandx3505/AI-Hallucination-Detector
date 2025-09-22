@@ -31,7 +31,7 @@ Large Language Models.
 Link: https://arxiv.org/pdf/2507.06196v1
 
 
-Rishal Rana: 1)[RAG-HAT] (https://aclanthology.org/2024.emnlp-industry.113.pdf): A Hallucination-Aware Tuning Pipeline for LLM in
+Rishal Rana: 1)[RAG-HAT](https://aclanthology.org/2024.emnlp-industry.113.pdf): A Hallucination-Aware Tuning Pipeline for LLM in
 Retrieval-Augmented Generation  
 
 
