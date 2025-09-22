@@ -21,3 +21,20 @@ will be optimized for real-time detection and deployment through a web interface
 By pursuing this strategy, the project aims to enhance the reliability of AI-generated content and reduce the
 risks tied to misinformation. This solution will be essential for businesses, researchers, and individuals who
 depend on AI for important decision-making, promoting responsible and ethical use of AI.
+
+
+
+Research Papers:
+
+Arpita Rani: 1)
+
+
+Rishal Rana: 1)
+
+
+Anand Chaudhary: 1)
+
+
+Arnav Sharma: 1)
+
+
