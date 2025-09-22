@@ -35,7 +35,8 @@ Rishal Rana: 1)[RAG-HAT](https://aclanthology.org/2024.emnlp-industry.113.pdf): 
 Retrieval-Augmented Generation  
 
 
-Anand Chaudhary: 1)
+Anand Chaudhary: 1)[Lookback Lens](https://arxiv.org/pdf/2407.07071): Detecting and Mitigating Contextual Hallucinations in
+Large Language Models Using Only Attention Maps.
 
 
 Arnav Sharma: 1)https://arxiv.org/pdf/2311.05232
