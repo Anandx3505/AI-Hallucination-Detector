@@ -38,7 +38,7 @@ Anand Chaudhary: 1)[Lookback Lens](https://arxiv.org/pdf/2407.07071): Detecting 
 Large Language Models Using Only Attention Maps.
 
 
-Arnav Sharma: 1)A Survey on Hallucination in Large Language Models:
- Principles, Taxonomy, Challenges, and Open Questions. LINK: https://arxiv.org/pdf/2311.05232
+Arnav Sharma: 1)[A Survey on Hallucination in Large Language Models](https://arxiv.org/pdf/2311.05232):
+ Principles, Taxonomy, Challenges, and Open Questions.
 
 
