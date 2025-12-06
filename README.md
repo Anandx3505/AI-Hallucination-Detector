@@ -211,9 +211,13 @@ Open-source LLM research community
 
 Arpita Rani: 1) [UQLM](https://arxiv.org/pdf/2507.06196v1): A Python Package for Uncertainty Quantification in
 Large Language Models.
+
 2) [Mitigating Hallucination in Visual Language Models with Visual Supervision](https://arxiv.org/abs/2311.16479)
+
 3) [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664)
+   
 4) [Hallucinations in Artificial Intelligence](https://www.ijsr.net/getabstract.php?paperid=SR241229170309)
+ 
 5) [A Survey on Hallucination in Large Language Models](https://arxiv.org/abs/2311.05232)
 
 
