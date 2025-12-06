@@ -1,9 +1,4 @@
-# Leveraging Graph Structures to Detect Hallucinations in Large Language Models
 
-Welcome to the GitHub repository for the research project conducted at the University of Amsterdam, focusing on "Leveraging Graph Structures to Detect Hallucinations in Large Language Models This project explores approaches to enhance the trustworthiness of large language models by leveraging graph structures for the detection and mitigation of hallucinations. This README has the specifics on how to use the files regarding acquisition of baseline models.
-
-## Training Baselines
-There is three baseline models available for training, MLP, Cross Encoder, and PCA. Based on the chosen parameters, you can choose the embedder to compute contextual embeddings, and save them for future use. All training is done on the tran set, validation is used for hyperparameter search, if desired, the best model is evaluated on the test set upon training completetion.
 
 ### Usage
 To start training and evaluation, use the following command:
@@ -24,6 +19,3 @@ python train.py [arguments]
 --pretrained <pretrained>: What model to use for computing embeddings, if a local pretrained model us used, then provide the path to the location of the model (default: bert-base-uncased)
 ```
 
-## Authors
-
-This research project is a collaborative effort by Sergei Agaronian & Noa Nonkes, supervised by Roxana Petcu, from the University of Amsterdam.
