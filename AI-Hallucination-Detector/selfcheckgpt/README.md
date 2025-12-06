@@ -1,6 +1,4 @@
-# Leveraging Graph Structures to Detect Hallucinations in Large Language Models
 
-Welcome to the GitHub repository for the research project conducted at the University of Amsterdam, focusing on "Leveraging Graph Structures to Detect Hallucinations in Large Language Models." This project explores approaches to enhance the trustworthiness of large language models by leveraging graph structures for the detection and mitigation of hallucinations. This README has the specifics on how to use the files regarding the graph structures and networks for the SelfCheckGPT dataset [1].
 
 ## Generating Node Features and Edges
 To create node features and edges from the retrieval augmented generated answers, using the `make_graph.py` script. This script offers various options to customize the graph generation process. 
@@ -78,9 +76,5 @@ python evaluate_graph.py [arguments]
 --mode <set-to-validate-on>: Define the set on which to validate (default: "val")
 ```
 
-## Authors
 
-This research project is a collaborative effort by Sergei Agaronian & Noa Nonkes, supervised by Roxana Petcu, from the University of Amsterdam.
 
-## References
-[1] Manakul, P., Liusie, A., & Gales, M. J. (2023). Selfcheckgpt: Zero-resource black-box hallucination detection for generative large language models. arXiv preprint arXiv:2303.08896.
