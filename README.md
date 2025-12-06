@@ -28,6 +28,10 @@ depend on AI for important decision-making, promoting responsible and ethical us
 
 Arpita Rani: 1) [UQLM](https://arxiv.org/pdf/2507.06196v1): A Python Package for Uncertainty Quantification in
 Large Language Models.
+2) https://arxiv.org/abs/2311.16479
+3) https://arxiv.org/abs/2509.04664
+4) https://www.ijsr.net/getabstract.php?paperid=SR241229170309
+5) https://arxiv.org/abs/2311.05232
 
 
 Rishal Rana: 1)[RAG-HAT](https://aclanthology.org/2024.emnlp-industry.113.pdf): A Hallucination-Aware Tuning Pipeline for LLM in
