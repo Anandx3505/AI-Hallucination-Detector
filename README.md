@@ -1,8 +1,8 @@
-**Explainable Graph-Based Hallucination Detection for Large Language Models**
+# Explainable Graph-Based Hallucination Detection for Large Language Models
 
 Rapid, accurate, and interpretable detection of hallucinated content in Large Language Model (LLM) outputs using graph learning, semantic analysis, and ensemble scoring.
 
-**1. Project Overview**
+# **1. Project Overview**
 
 This repository contains the implementation of our Major Project:
 
@@ -10,7 +10,7 @@ Explainable Graph-Based Hallucination Detection for Large Language Models (LLMs)
 
 The project focuses on identifying factual inconsistencies and hallucinated content produced by advanced language models. The system uses semantic similarity graphs, attention-based learning, and multi-scorer ensembles to deliver accurate and interpretable hallucination detection.
 
-**2. Objective**
+# **2. Objective**
 
 To design and implement a scalable hallucination detection framework that:
 
@@ -24,8 +24,7 @@ Leverages multi-scorer ensemble systems for robust factuality verification.
 
 Generates interpretable explanations for each detection to improve user trust.
 
-**3. Team
-**
+# **3. Team**
 Department of Computer Science & Engineering
 Jaypee University of Information Technology, Waknaghat
 
@@ -37,10 +36,10 @@ Rishal Rana – Roll No: 221030004
 
 Arnav Sharma – Roll No: 221030059
 
-**Supervisor:**
+# **Supervisor:**
 Prof. Dr. Vivek Kumar Sehgal
 
-**4. Key Features & Methodology**
+# **4. Key Features & Methodology**
 
 We propose a multi-layered hallucination detection framework consisting of the following stages:
 
@@ -74,7 +73,7 @@ Integrates semantic role labeling (SRL) and attention visualization.
 
 Highlights hallucinated spans and provides reasoning-level explanations.
 
-**5. High-Level Architecture**
+# **5. High-Level Architecture**
 **Pipeline Overview**
 
 **Input**
@@ -89,8 +88,8 @@ Embedding → k-NN Graph → Semantic edges
 
 Stage 3 – Graph Attention Classifier
 GAT-based hallucination classification model
-**
-Output**
+
+ # **Output**
 
 Hallucination probability score
 
@@ -98,7 +97,7 @@ Highlighted factual inconsistencies
 
 Explanation heatmaps
 
-**6. Dataset**
+# **6. Dataset**
 
 The system generates its own dataset using controlled prompt-response generation.
 
@@ -115,8 +114,8 @@ Stored in:
 data/processed/ (.csv, .json)
 
 data/raw/ (raw LLM outputs)
-**
-7. Preprocessing Pipeline**
+
+# **7. Preprocessing Pipeline**
 
 The following preprocessing steps are applied:
 
@@ -128,7 +127,7 @@ Embedding generation using transformer encoders
 
 Semantic similarity computation
 
-**8. Model Components**
+## **8. Model Components**
 Embedding Module
 
 Transformer-based encoders for semantic representation.
@@ -157,7 +156,7 @@ Highlighted hallucinated spans
 
 Attention-based interpretability visualization
 
-**9. Installation & Setup**
+# **9. Installation & Setup**
 Prerequisites
 
 Python 3.8+
@@ -170,7 +169,7 @@ Virtualenv / Conda
 
 Setup Steps
 # Clone repository
-git clone https://github.com/your-username/AI-Hallucination-Detector.git
+git [https://github.com/your-username/AI-Hallucination-Detector.git](https://github.com/Anandx3505/AI-Hallucination-Detector/edit/main/README.md)
 cd AI-Hallucination-Detector
 
 # Create virtual environment (optional)
@@ -185,7 +184,7 @@ pip install -r requirements.txt
 Run the Application
 python main.py
 
-**10. Future Work**
+# **10. Future Work**
 
 Integration of real-time web-based fact verification APIs
 
@@ -197,7 +196,7 @@ Multimodal hallucination detection (text-image-video)
 
 Browser extension for real-time hallucination highlighting
 
-**11. Acknowledgments**
+# **11. Acknowledgments**
 
 JUIT CSE Department
 
@@ -208,7 +207,7 @@ PyTorch Geometric Community
 Open-source LLM research community
 
 
-**Research Papers:**
+# **Research Papers:**
 
 Arpita Rani: 1) [UQLM](https://arxiv.org/pdf/2507.06196v1): A Python Package for Uncertainty Quantification in
 Large Language Models.
