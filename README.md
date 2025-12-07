@@ -206,6 +206,11 @@ PyTorch Geometric Community
 
 Open-source LLM research community
 
+# **12.Video Demonstration**
+
+A live demonstration of our project, showcasing the data generation, graph construction, training, and evaluation processes, can be viewed here:
+
+[**Watch the Video Demonstration**](https://drive.google.com/file/d/1Gq3V_0q7QTH5RJBFS0X_nNW3Ckz_oRPG/view?usp=sharing)
 
 # **Research Papers:**
 
