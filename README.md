@@ -43,31 +43,31 @@ Prof. Dr. Vivek Kumar Sehgal
 
 We propose a multi-layered hallucination detection framework consisting of the following stages:
 
-**Input & Response Generation**
+**Input & Response Generation:**
 
 Accepts user prompts and LLM-generated responses.
 
 Generates multiple diverse variations using controlled sampling strategies.
 
-**Semantic Embedding Extraction**
+**Semantic Embedding Extraction:**
 
 Converts responses into high-dimensional vector embeddings using transformer-based models.
 
 Captures contextual and semantic structure of generated text.
 
-**Graph Construction**
+**Graph Construction:**
 
 Builds semantic similarity graphs using k-NN and threshold-based edge creation.
 
 Models relationships between consistent and inconsistent responses.
 
-**Graph Attention Network (GAT)**
+**Graph Attention Network (GAT):**
 
 Applies attention-based graph neural networks to learn response reliability patterns.
 
 Classifies responses into correct, partially correct, or hallucinated categories.
 
-**Explainable AI (XAI) Module**
+**Explainable AI (XAI) Module:**
 
 Integrates semantic role labeling (SRL) and attention visualization.
 
