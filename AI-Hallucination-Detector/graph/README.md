@@ -105,7 +105,7 @@ As part of our ablation studies, we perform an ablation study with the CL-learne
 
 ### Usage
 
-To execute the script, utilize the following command:
+To execute the script command used :
 ```bash
 python kNN.py [arguments]
 ```
