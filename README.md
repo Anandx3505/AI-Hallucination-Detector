@@ -168,9 +168,6 @@ CUDA-enabled GPU (recommended)
 Virtualenv / Conda
 
 Setup Steps
-# Clone repository
-git [https://github.com/your-username/AI-Hallucination-Detector.git](https://github.com/Anandx3505/AI-Hallucination-Detector/edit/main/README.md)
-cd AI-Hallucination-Detector
 
 # Create virtual environment (optional)
 python -m venv .venv
