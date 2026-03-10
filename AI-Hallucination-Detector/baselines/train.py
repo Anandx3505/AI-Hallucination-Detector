@@ -129,7 +129,7 @@ def main(args):
         train_loss = train(model, train_loader, criterion, optimizer, device, reduce)
         val_loss, val_metrics = validate(model, val_loader, criterion, metrics, device, reduce)
         print(f'Epoch: {i}\n\ttrain: {train_loss}\n\tval: {val_loss}')
-        print('Val mse: ', val_metrics['MSE'], '\tVal accuracy: ', val_metrics['Accuracy'])
+        print('Val mse: ', val_metrics['MSE'], '\tVal accuracy: ', val_metrics['Accuracy'], '\tVal F1: ', val_metrics['F1'])
 
         if best_val < val_loss:
             best_val = val_loss
@@ -142,7 +142,7 @@ def main(args):
         model.load_state_dict(best_model_state['state_dict'])
         test_loss, test_metrics = validate(model, test_loader, criterion, metrics, device, reduce)
         print('Test Loss: ', test_loss)
-        print('Test MSE: ', test_metrics['MSE'], '\tTest Accuracy: ', test_metrics['Accuracy'])
+        print('Test MSE: ', test_metrics['MSE'], '\tTest Accuracy: ', test_metrics['Accuracy'], '\tTest F1: ', test_metrics['F1'])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)

@@ -45,6 +45,11 @@ class SimCLR(nn.Module):
             
             # don't make own examples similar to itself
             sim_copy[row_mask] = -1.
+            
+            if pos_examples.numel() == 0:
+                metric[row] = float('inf')
+                continue
+
             comb_sim = torch.cat([pos_examples, sim_copy])
             max_pos = pos_examples.argmax()
 
@@ -92,7 +97,7 @@ def train_loop(dataloader, model, loss_func, optimizer, lr_scheduler, logs, devi
         epoch_loss += train_loss
     lr_scheduler.step()
 
-    return epoch_loss.item() / j, logs
+    return epoch_loss.item() / (j + 1), logs
 
 
 def val_loop(dataloader, model, loss_func, val_logs, device):
@@ -109,7 +114,7 @@ def val_loop(dataloader, model, loss_func, val_logs, device):
                 val_loss, val_logs = loss_func(feats, labels, val_logs, mode="val")
                 total_loss += val_loss
 
-    return total_loss.item() / j, val_logs
+    return total_loss.item() / (j + 1), val_logs
 
 
 if __name__ == "__main__":
@@ -144,7 +149,7 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load graph
-    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device)
+    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device, weights_only=False)
 
     # create a simple dataset in order to easily batch from
     train_dataset = SimpleDataset(graph.x[graph.train_idx], graph.y[graph.train_idx])

@@ -1,9 +1,13 @@
 import torch, argparse
-from torcheval.metrics import MulticlassConfusionMatrix, MulticlassAccuracy, MulticlassRecall, MulticlassPrecision, BinaryRecall
+from torcheval.metrics import MulticlassConfusionMatrix, MulticlassAccuracy, MulticlassRecall, MulticlassPrecision, BinaryRecall, MulticlassF1Score
 from torch_geometric.utils import remove_isolated_nodes
 
 from GAT import GAT
 import utils_graph
+import json
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
 
 from os.path import join as path_join
 torch.set_printoptions(profile="full")
@@ -28,6 +32,13 @@ if __name__ == "__main__":
                         help="Whether to save best model weights")
     args = parser.parse_args()
 
+    # Fix for running from root directory
+    import os
+    if args.path == "../data/" and not os.path.exists(args.path) and os.path.exists("data/"):
+        args.path = "data/"
+    if args.output_dir == "../weights/" and not os.path.exists(args.output_dir) and os.path.exists("weights/"):
+        args.output_dir = "weights/"
+
     # for reproducibility
     utils_graph.set_seed(42)
     
@@ -43,7 +54,7 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load graph
-    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device)
+    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device, weights_only=False)
     graph.to(device)
 
     # removing isolated nodes
@@ -56,7 +67,7 @@ if __name__ == "__main__":
     edge_index = graph.edge_index.T # [N, 2]; (i, j) node pairs as rows
 
     # load the distances
-    distances = torch.load(path_join(args.path, "distances.pt"), map_location=device)
+    distances = torch.load(path_join(args.path, "distances.pt"), map_location=device, weights_only=False)
     # get the distances corresponding to the nodes that have edges
     edge_attr = distances[edge_index[:, 0], edge_index[:, 1]] # [N, ]
 
@@ -84,7 +95,7 @@ if __name__ == "__main__":
 
     embedder_file = f"embedder_act_ReLU_opt_AdamW_lr_0.0001_bs_256_t_0.07.pt"
     embedder = torch.nn.Sequential(*[torch.nn.Linear(in_channels, in_channels), torch.nn.ReLU(), torch.nn.Linear(in_channels, 128)])
-    embedder.load_state_dict(torch.load(path_join(args.output_dir, embedder_file), map_location=device)["state_dict"])
+    embedder.load_state_dict(torch.load(path_join(args.output_dir, embedder_file), map_location=device, weights_only=False)["state_dict"])
     gat = GAT(embedder, n_in=in_channels, hid=hidden_channels,
                      in_head=in_head, 
                      n_classes=out_channels, dropout=dropout)
@@ -98,9 +109,12 @@ if __name__ == "__main__":
     conf = MulticlassConfusionMatrix(num_classes=4)
     macro_recall = MulticlassRecall(num_classes=4, average="macro")
     macro_precision = MulticlassPrecision(num_classes=4, average="macro")
+    macro_f1 = MulticlassF1Score(num_classes=4, average="macro")
     binary_recall = BinaryRecall()
 
     optimizer = utils_graph.get_optimizer(args.optimizer, gat, args.learning_rate)
+    
+    history = []
 
     best_recall = 0.
     for i in range(args.epochs):
@@ -129,9 +143,13 @@ if __name__ == "__main__":
         train_macro_recall = utils_graph.macro_recall(macro_recall, y_pred_train, y_train)
         val_macro_recall = utils_graph.macro_recall(macro_recall, y_pred_val, y_val)
 
-        # Train and valuation macro recall
-        train_macro_precision = utils_graph.macro_recall(macro_precision, y_pred_train, y_train)
-        val_macro_precision = utils_graph.macro_recall(macro_precision, y_pred_val, y_val)
+        # Train and valuation macro precision
+        train_macro_precision = utils_graph.macro_precision(macro_precision, y_pred_train, y_train)
+        val_macro_precision = utils_graph.macro_precision(macro_precision, y_pred_val, y_val)
+
+        # Train and valuation macro F1
+        train_macro_f1 = utils_graph.macro_f1(macro_f1, y_pred_train, y_train)
+        val_macro_f1 = utils_graph.macro_f1(macro_f1, y_pred_val, y_val)
 
         # Train and valuation binary accuracy
         binary_mask = torch.logical_or((y_train == 0), (y_train == 3))
@@ -154,8 +172,20 @@ if __name__ == "__main__":
         print(f"\ttrain macro recall: {train_macro_recall.item()}\n\tval macro recall: {val_macro_recall.item()}")
         # Print train and valuation macro precision
         print(f"\ttrain macro precision: {train_macro_precision.item()}\n\tval macro precision: {val_macro_precision.item()}")
+        # Print train and valuation macro F1
+        print(f"\ttrain macro f1: {train_macro_f1.item()}\n\tval macro f1: {val_macro_f1.item()}")
         # Print train and valuation binary accuracy
         print(f"\ttrain binary recall: {train_binary_recall.item()}\n\tval binary recall: {val_binary_recall.item()}")
+
+        history.append({
+            "epoch": i,
+            "train_loss": train_loss,
+            "val_loss": val_loss,
+            "train_acc": train_acc.item(),
+            "val_acc": val_acc.item(),
+            "train_f1": train_macro_f1.item(),
+            "val_f1": val_macro_f1.item()
+        })
 
         if val_macro_recall.item() > best_recall:
             best_recall = val_macro_recall.item() 
@@ -165,3 +195,43 @@ if __name__ == "__main__":
                 }
     if args.save_model:
         torch.save(save, path_join(args.output_dir, f"GAT_{best_i}.pt"))
+
+    # Save training history
+    with open(path_join(args.output_dir, "training_history.json"), "w") as f:
+        json.dump(history, f, indent=4)
+        
+    # Plot training curves
+    epochs = [h["epoch"] for h in history]
+    
+    plt.figure(figsize=(15, 5))
+    
+    # Loss
+    plt.subplot(1, 3, 1)
+    plt.plot(epochs, [h["train_loss"] for h in history], label="Train Loss")
+    plt.plot(epochs, [h["val_loss"] for h in history], label="Val Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.title("Loss Curve")
+    
+    # Accuracy
+    plt.subplot(1, 3, 2)
+    plt.plot(epochs, [h["train_acc"] for h in history], label="Train Acc")
+    plt.plot(epochs, [h["val_acc"] for h in history], label="Val Acc")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    plt.title("Accuracy Curve")
+    
+    # F1 Score
+    plt.subplot(1, 3, 3)
+    plt.plot(epochs, [h["train_f1"] for h in history], label="Train F1")
+    plt.plot(epochs, [h["val_f1"] for h in history], label="Val F1")
+    plt.xlabel("Epoch")
+    plt.ylabel("F1 Score")
+    plt.legend()
+    plt.title("F1 Score Curve")
+    
+    os.makedirs(path_join(args.path, "../images"), exist_ok=True)
+    plt.savefig(path_join(args.path, "../images/training_curves.png"))
+    print(f"Training curves saved to {path_join(args.path, '../images/training_curves.png')}")

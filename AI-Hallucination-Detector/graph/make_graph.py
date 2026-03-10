@@ -26,6 +26,11 @@ if __name__ == "__main__":
     parser.add_argument("--num-workers", type=int, default=4)
     args = parser.parse_args()
 
+    # Fix for running from root directory
+    import os
+    if args.path == "../data/" and not os.path.exists(args.path) and os.path.exists("data/"):
+        args.path = "data/"
+
     # for reproducibility
     set_seed(42)
 

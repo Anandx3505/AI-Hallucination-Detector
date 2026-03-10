@@ -18,6 +18,13 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Fix for running from root directory
+    import os
+    if args.path == "../data/" and not os.path.exists(args.path) and os.path.exists("data/"):
+        args.path = "data/"
+    if args.output_dir == "images/" and not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir, exist_ok=True)
+
     print("STARTING...  setup:")
     print(args)
     print("-" * 120)
@@ -30,16 +37,21 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # load graph
-    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device)
+    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device, weights_only=False)
     graph.to(device)
 
     # removing isolated nodes
     isolated = (remove_isolated_nodes(graph["edge_index"])[2] == False).sum(dim=0).item()
     print(f"Number of isolated nodes = {isolated}\n")
 
-    embedder_file = f"embedder_act_ReLU_opt_AdamW_lr_0.0001_bs_256_t_0.07_998.pt"
+    embedder_file = f"embedder_act_ReLU_opt_AdamW_lr_0.0001_bs_256_t_0.07.pt"
     embedder = torch.nn.Sequential(*[torch.nn.Linear(768, 768), torch.nn.ReLU(), torch.nn.Linear(768, 128)])
-    embedder.load_state_dict(torch.load(path_join("../weights", embedder_file), map_location=device)["state_dict"])
+    
+    weights_path = "../weights"
+    if not os.path.exists(weights_path) and os.path.exists("weights"):
+        weights_path = "weights"
+        
+    embedder.load_state_dict(torch.load(path_join(weights_path, embedder_file), map_location=device, weights_only=False)["state_dict"])
     embedder.to(device)
     embeddings = embedder(graph.x)
     

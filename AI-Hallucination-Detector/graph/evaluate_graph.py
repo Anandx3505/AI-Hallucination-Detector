@@ -1,9 +1,13 @@
 import torch, argparse
-from torcheval.metrics import MulticlassAUPRC, MulticlassConfusionMatrix, MulticlassAccuracy, MulticlassPrecision, MulticlassRecall, BinaryRecall
+from torcheval.metrics import MulticlassAUPRC, MulticlassConfusionMatrix, MulticlassAccuracy, MulticlassPrecision, MulticlassRecall, BinaryRecall, MulticlassF1Score
 from torch_geometric.utils import remove_isolated_nodes
 
 from GAT import GAT
 import utils_graph
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import os
 
 from os.path import join as path_join
 torch.set_printoptions(profile="full")
@@ -22,6 +26,13 @@ if __name__ == "__main__":
                         help="Mode for evaluation")
     args = parser.parse_args()
 
+    # Fix for running from root directory
+    import os
+    if args.path == "../data/" and not os.path.exists(args.path) and os.path.exists("data/"):
+        args.path = "data/"
+    if args.load_model.startswith("../weights/") and not os.path.exists("../weights/") and os.path.exists("weights/"):
+        args.load_model = args.load_model.replace("../weights/", "weights/")
+
     # for reproducibility
     utils_graph.set_seed(42)
     
@@ -37,7 +48,7 @@ if __name__ == "__main__":
         device = torch.device("cpu")
 
     # Load graph
-    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device)
+    graph = torch.load(path_join(args.path, "graph.pt"), map_location=device, weights_only=False)
     graph.to(device)
 
     # Removing isolated nodes
@@ -50,7 +61,7 @@ if __name__ == "__main__":
     edge_index = graph.edge_index.T # [N, 2]; (i, j) node pairs as rows
 
     # load the distances
-    distances = torch.load(path_join(args.path, "distances.pt"), map_location=device)
+    distances = torch.load(path_join(args.path, "distances.pt"), map_location=device, weights_only=False)
     # get the distances corresponding to the nodes that have edges
     edge_attr = distances[edge_index[:, 0], edge_index[:, 1]] # [N, ]
 
@@ -92,7 +103,16 @@ if __name__ == "__main__":
     gat = GAT(embedder, n_in=in_channels, hid=hidden_channels,
                      in_head=in_head, 
                      n_classes=out_channels, dropout=dropout)
-    gat.load_state_dict(torch.load(args.load_model, map_location=device)["state_dict"])
+    state_dict = torch.load(args.load_model, map_location=device, weights_only=False)["state_dict"]
+    
+    # Patch for compatibility with newer torch_geometric
+    if "conv.lin_src.weight" in state_dict:
+        print("Patching state dict: renaming conv.lin_src.weight to conv.lin.weight")
+        state_dict["conv.lin.weight"] = state_dict.pop("conv.lin_src.weight")
+        if "conv.lin_dst.weight" in state_dict:
+            state_dict.pop("conv.lin_dst.weight")
+            
+    gat.load_state_dict(state_dict)
     gat.to(device)
 
     # Cross entropy loss -- w/ logits
@@ -103,6 +123,7 @@ if __name__ == "__main__":
     conf = MulticlassConfusionMatrix(num_classes=4)
     macro_recall = MulticlassRecall(num_classes=4, average="macro")
     macro_precision = MulticlassPrecision(num_classes=4, average="macro")
+    macro_f1 = MulticlassF1Score(num_classes=4, average="macro")
     binary_recall = BinaryRecall()
     macro_AUPRC = MulticlassAUPRC(num_classes=4, average="macro")
 
@@ -125,7 +146,10 @@ if __name__ == "__main__":
     m_recall = utils_graph.macro_recall(macro_recall, y_pred, y)
 
     # Valuation macro precision
-    m_precision = utils_graph.macro_recall(macro_precision, y_pred, y)
+    m_precision = utils_graph.macro_precision(macro_precision, y_pred, y)
+
+    # Valuation macro F1
+    m_f1 = utils_graph.macro_f1(macro_f1, y_pred, y)
 
     # Valuation macro area under the precision-recall curve
     m_AUPRC = utils_graph.macro_AUPRC(macro_AUPRC, y_pred, y)
@@ -149,10 +173,25 @@ if __name__ == "__main__":
     print(f"Macro recall: {m_recall.item()}")
     # Print valuation macro precision
     print(f"Macro precision: {m_precision.item()}")
+    # Print valuation macro F1
+    print(f"Macro F1: {m_f1.item()}")
     # Print valuation binary accuracy
     print(f"Binary recall: {b_recall.item()}")
     # Print valuation one frame agreement
     print(f"One frame agreement: {ofa}")
     # Print valuation macro AUPRC
     print(f"Macro AUPRC: {m_AUPRC.item()}")
+
+    # Plot and save confusion matrix
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(conf_mat.cpu().numpy(), annot=True, fmt='g', cmap='Blues')
+    plt.xlabel('Predicted labels')
+    plt.ylabel('True labels')
+    plt.title('Confusion Matrix')
+    
+    # Create images directory if it doesn't exist
+    os.makedirs(path_join(args.path, "../images"), exist_ok=True)
+    save_path = path_join(args.path, "../images/confusion_matrix.png")
+    plt.savefig(save_path)
+    print(f"Confusion matrix plot saved to {save_path}")
  
