@@ -261,6 +261,24 @@ def macro_precision(precision_metric, inputs, targets):
     return precision_metric.compute()
 
 
+def macro_f1(f1_metric, inputs, targets):
+    """
+    Computes macro F1 score metric based on predicted and target labels.
+
+    Args:
+    - f1_metric: Macro F1 score metric object.
+    - inputs (torch.Tensor): Predicted labels.
+    - targets (torch.Tensor): Target labels.
+
+    Returns:
+    - float: Computed macro F1 score value.
+    """
+
+    f1_metric.reset()
+    f1_metric.update(inputs, targets)
+    return f1_metric.compute()
+
+
 def binary_recall(recall_metric, inputs, targets):
     """
     Computes binary recall metric based on predicted and target labels.

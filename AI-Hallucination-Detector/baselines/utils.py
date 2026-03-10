@@ -3,7 +3,7 @@ import numpy as np
 
 from sklearn.decomposition import PCA
 from torchmetrics.regression import MeanSquaredError
-from torcheval.metrics import MultilabelAUPRC, MultilabelAccuracy, MulticlassPrecision, MulticlassRecall, BinaryRecall
+from torcheval.metrics import MultilabelAUPRC, MultilabelAccuracy, MulticlassPrecision, MulticlassRecall, BinaryRecall, MulticlassF1Score
 
 
 class EvalManager:
@@ -12,6 +12,7 @@ class EvalManager:
         self.accuracy = MultilabelAccuracy().to(device)
         self.precision = MulticlassPrecision(num_classes=4, average="macro").to(device)
         self.recall = MulticlassRecall(num_classes=4, average="macro").to(device)
+        self.f1 = MulticlassF1Score(num_classes=4, average="macro").to(device)
         self.b_recall = BinaryRecall()
         
 
@@ -23,6 +24,7 @@ class EvalManager:
         self.accuracy.reset()
         self.precision.reset()
         self.recall.reset()
+        self.f1.reset()
         self.b_recall.reset()
 
     def update_all(self, output, target):
@@ -37,6 +39,7 @@ class EvalManager:
         self.accuracy.update(output, target)
         self.precision.update(output, target)
         self.recall.update(output, target)
+        self.f1.update(output, target)
         self.b_recall.update(output, target)
         
     def compute_all(self):
@@ -51,6 +54,7 @@ class EvalManager:
             'Accuracy': self.accuracy.compute().item(),
             'Precision': self.precision.compute().item(),
             'Recall': self.recall.compute().item(),
+            'F1': self.f1.compute().item(),
             'Binary': self.b_recall.compute().item()
         }
 

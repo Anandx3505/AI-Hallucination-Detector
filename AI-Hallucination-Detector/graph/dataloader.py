@@ -32,6 +32,8 @@ class SentenceLabelDataset(Dataset):
             limit (int, optional): Number of samples to use from the dataset (for debugging or limiting dataset size).
         """
         self.q_data = pd.read_json(path + 'sampled_data.json', lines=True)
+        if limit > 0:
+            self.q_data = self.q_data.iloc[:limit]
         self.nc_data = pd.read_csv(path + 'generated/no_context.csv')
         self.wc_data = pd.read_csv(path + 'generated/with_context.csv')
 
