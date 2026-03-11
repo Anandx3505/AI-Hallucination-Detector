@@ -1,0 +1,7 @@
+{
+    "model": "SelfCheckGPT-BERTScore",
+    "accuracy": 0.3496969696969697,
+    "macro_f1": 0.28533298653919226,
+    "binary_recall": 0.9837662337662337,
+    "threshold": 0.6700000000000004
+}
