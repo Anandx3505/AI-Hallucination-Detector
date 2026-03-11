@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hallucination Detector — Graph-Based Detection Dashboard</title>
+    <meta name="description" content="Explainable Graph-Based Hallucination Detection for LLMs using GAT, contrastive learning, and semantic similarity graphs.">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="nav-logo">🧠 <span>HalluciDetect</span></a>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#pipeline">How It Works</a></li>
+                <li><a href="#comparison">Results</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ====== HERO ====== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <canvas id="hero-canvas"></canvas>
+        </div>
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Major Project — JUIT, Waknaghat
+            </div>
+            <h1>Explainable <span class="gradient-text">Graph-Based</span><br>Hallucination Detection</h1>
+            <p class="subtitle">Detecting factual inconsistencies in LLM outputs using semantic similarity graphs, attention-based learning, and multi-scorer ensembles.</p>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value blue" id="stat-acc">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value green" id="stat-recall">0%</div>
+                    <div class="stat-label">Hallucination Recall</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value purple" id="stat-f1">0</div>
+                    <div class="stat-label">Macro F1 Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value blue" id="stat-ofa">0%</div>
+                    <div class="stat-label">One-Frame Agreement</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== PIPELINE ====== -->
+    <section class="pipeline-section" id="pipeline">
+        <div class="container">
+            <div class="section-title">
+                <h2>How GAT Detects Hallucinations</h2>
+                <p>A 6-stage pipeline from raw text to explainable hallucination detection</p>
+            </div>
+
+            <div class="pipeline-container">
+                <!-- Step 1 -->
+                <div class="pipeline-step" data-step="1">
+                    <div class="step-number s1">1</div>
+                    <div class="step-content">
+                        <h3>📝 Input & Response Generation</h3>
+                        <p>A biomedical question is sent to <strong>LLaMA-2 (13B)</strong>, which generates <strong>5 answer candidates</strong> — 1 correct and 4 potentially hallucinated responses using controlled sampling.</p>
+                        <div class="step-visual">
+                            <canvas id="step1-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="pipeline-connector"></div>
+
+                <!-- Step 2 -->
+                <div class="pipeline-step" data-step="2">
+                    <div class="step-number s2">2</div>
+                    <div class="step-content">
+                        <h3>🔢 Semantic Embedding</h3>
+                        <p>Each answer is converted to a <strong>768-dimensional vector</strong> using <strong>BERT</strong>, capturing deep semantic meaning and contextual relationships.</p>
+                        <div class="step-visual">
+                            <canvas id="step2-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="pipeline-connector"></div>
+
+                <!-- Step 3 -->
+                <div class="pipeline-step" data-step="3">
+                    <div class="step-number s3">3</div>
+                    <div class="step-content">
+                        <h3>🎯 Contrastive Learning (SimCLR)</h3>
+                        <p>Embeddings are refined via <strong>SimCLR</strong> — pulling same-class answers together and pushing different-class answers apart in a <strong>128-dim space</strong>.</p>
+                        <div class="step-visual">
+                            <canvas id="step3-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="pipeline-connector"></div>
+
+                <!-- Step 4 -->
+                <div class="pipeline-step" data-step="4">
+                    <div class="step-number s4">4</div>
+                    <div class="step-content">
+                        <h3>🕸️ Graph Construction (k-NN)</h3>
+                        <p>A semantic similarity graph is built — each answer is a node, and edges connect answers with <strong>cosine similarity > 0.85</strong>. Truthful answers cluster together.</p>
+                        <div class="step-visual">
+                            <canvas id="step4-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="pipeline-connector"></div>
+
+                <!-- Step 5 -->
+                <div class="pipeline-step" data-step="5">
+                    <div class="step-number s5">5</div>
+                    <div class="step-content">
+                        <h3>⚡ Graph Attention Network (GAT)</h3>
+                        <p>The GAT learns <strong>attention weights</strong> per edge — some neighbors matter more than others. This is the key differentiator from GCN (which treats all edges equally).</p>
+                        <div class="step-visual">
+                            <canvas id="step5-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="pipeline-connector"></div>
+
+                <!-- Step 6 -->
+                <div class="pipeline-step" data-step="6">
+                    <div class="step-number s6">6</div>
+                    <div class="step-content">
+                        <h3>✅ Classification & Explanation</h3>
+                        <p>Each answer is classified as <span style="color:var(--accent-green)">Correct</span>, <span style="color:var(--accent-orange)">Partially Correct</span>, or <span style="color:var(--accent-red)">Hallucinated</span>. Attention heatmaps provide explainability.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== COMPARISON ====== -->
+    <section class="comparison-section" id="comparison">
+        <div class="container">
+            <div class="section-title">
+                <h2>Baseline Comparison</h2>
+                <p>GAT dominates all baselines — proving the value of graph attention</p>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>📊 Accuracy & F1 Score</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>🎯 Multi-Metric Radar</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">⚔️</div>
+                    <h4>GAT vs GCN</h4>
+                    <div class="insight-stat green">2x F1</div>
+                    <p>Attention mechanism doubles the F1 score vs isotropic GCN</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🧩</div>
+                    <h4>GAT vs DBSCAN</h4>
+                    <div class="insight-stat blue">1.88x F1</div>
+                    <p>Graph structure adds significant value beyond geometric clustering</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🔍</div>
+                    <h4>GAT vs SelfCheck</h4>
+                    <div class="insight-stat purple">2.55x F1</div>
+                    <p>Message passing far outperforms simple consistency scoring</p>
+                </div>
+            </div>
+
+            <div class="results-table-wrapper fade-in">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Type</th>
+                            <th>Accuracy</th>
+                            <th>Macro F1</th>
+                            <th>Binary Recall</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="gat-row">
+                            <td class="model-name">🏆 GAT (Ours)</td>
+                            <td>Graph Attention</td>
+                            <td class="winner">86.48%</td>
+                            <td class="winner">0.7268</td>
+                            <td class="winner">0.9513</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">DBSCAN</td>
+                            <td>Clustering</td>
+                            <td>74.91%</td>
+                            <td>0.3864</td>
+                            <td>0.8994</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">GCN</td>
+                            <td>Graph Conv</td>
+                            <td>73.94%</td>
+                            <td>0.3671</td>
+                            <td>0.5097</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">SelfCheckGPT</td>
+                            <td>Consistency</td>
+                            <td>34.97%</td>
+                            <td>0.2853</td>
+                            <td>0.9838</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== TEAM ====== -->
+    <section class="team-section" id="team">
+        <div class="container">
+            <div class="section-title">
+                <h2>Team & Research</h2>
+                <p>Department of Computer Science & Engineering, JUIT Waknaghat</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card fade-in">
+                    <div class="team-avatar">AR</div>
+                    <h4>Arpita Rani</h4>
+                    <p class="roll">221030055</p>
+                </div>
+                <div class="team-card fade-in">
+                    <div class="team-avatar">AC</div>
+                    <h4>Anand Chaudhary</h4>
+                    <p class="roll">221030123</p>
+                </div>
+                <div class="team-card fade-in">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#00ff88,#00d4ff)">RR</div>
+                    <h4>Rishal Rana</h4>
+                    <p class="roll">221030004</p>
+                </div>
+                <div class="team-card fade-in">
+                    <div class="team-avatar">AS</div>
+                    <h4>Arnav Sharma</h4>
+                    <p class="roll">221030059</p>
+                </div>
+            </div>
+
+            <div class="supervisor-card fade-in">
+                <h4>Supervisor</h4>
+                <p>Prof. Dr. Vivek Kumar Sehgal</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+        <div class="container">
+            <p>Explainable Graph-Based Hallucination Detection for LLMs &mdash; Major Project 2026</p>
+            <p style="margin-top:8px"><a href="https://drive.google.com/file/d/1Gq3V_0q7QTH5RJBFS0X_nNW3Ckz_oRPG/view?usp=sharing" target="_blank">Watch Video Demo ↗</a></p>
+        </div>
+    </footer>
+
+    <script src="js/pipeline.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
