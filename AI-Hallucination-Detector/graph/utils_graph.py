@@ -129,7 +129,7 @@ def rewrite_labels(labels):
     Output: tensor([1, 1, 1])
     """
 
-    new_labels = torch.empty_like(labels[:, 0])
+    new_labels = torch.zeros_like(labels[:, 0])
     for i, label in enumerate(labels):
         round_out = label.sigmoid().round()
         if round_out[-1] == 1.:

@@ -1,0 +1,9 @@
+{
+    "model": "GCN",
+    "best_epoch": 48,
+    "accuracy": 0.739393949508667,
+    "macro_recall": 0.3489307463169098,
+    "macro_precision": 0.48271191120147705,
+    "macro_f1": 0.3671311140060425,
+    "binary_recall": 0.5097402334213257
+}
