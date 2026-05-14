@@ -2,242 +2,147 @@
 
 Rapid, accurate, and interpretable detection of hallucinated content in Large Language Model (LLM) outputs using graph learning, semantic analysis, and ensemble scoring.
 
-# **1. Project Overview**
+## 1. Project Overview
 
-This repository contains the implementation of our Major Project:
+This repository contains the implementation of our Major Project: **Explainable Graph-Based Hallucination Detection for Large Language Models (LLMs)**.
 
-Explainable Graph-Based Hallucination Detection for Large Language Models (LLMs)
+The project focuses on identifying factual inconsistencies and hallucinated content produced by advanced language models. The system uses semantic similarity graphs, attention-based learning, and multi-scorer ensembles to deliver accurate and interpretable hallucination detection. 
 
-The project focuses on identifying factual inconsistencies and hallucinated content produced by advanced language models. The system uses semantic similarity graphs, attention-based learning, and multi-scorer ensembles to deliver accurate and interpretable hallucination detection.
+We have successfully developed a **Full-Stack Application** featuring a React-based interactive frontend and a robust PyTorch/Flask backend that performs live AI-driven hallucination detection.
 
-# **2. Objective**
+## 2. Objective
 
 To design and implement a scalable hallucination detection framework that:
+- Detects factually incorrect or unsupported LLM responses with high accuracy.
+- Operates effectively in low-supervision and noisy-data environments.
+- Uses graph-based learning to model semantic relationships between multiple responses.
+- Leverages multi-scorer ensemble systems for robust factuality verification.
+- Generates interpretable explanations for each detection to improve user trust.
+- Provides a seamless, interactive user interface for real-time hallucination analysis.
 
-Detects factually incorrect or unsupported LLM responses with high accuracy.
+## 3. Team & Supervisor
 
-Operates effectively in low-supervision and noisy-data environments.
-
-Uses graph-based learning to model semantic relationships between multiple responses.
-
-Leverages multi-scorer ensemble systems for robust factuality verification.
-
-Generates interpretable explanations for each detection to improve user trust.
-
-# **3. Team**
-Department of Computer Science & Engineering
+**Department of Computer Science & Engineering**  
 Jaypee University of Information Technology, Waknaghat
 
-Arpita Rani – Roll No: 221030055
+**Team Members:**
+- Arpita Rani – Roll No: 221030055
+- Anand Chaudhary – Roll No: 221030123
+- Rishal Rana – Roll No: 221030004
+- Arnav Sharma – Roll No: 221030059
 
-Anand Chaudhary – Roll No: 221030123
-
-Rishal Rana – Roll No: 221030004
-
-Arnav Sharma – Roll No: 221030059
-
-# **Supervisor:**
+**Supervisor:**  
 Prof. Dr. Vivek Kumar Sehgal
 
-# **4. Key Features & Methodology**
+## 4. Key Features & Methodology
 
 We propose a multi-layered hallucination detection framework consisting of the following stages:
 
-**Input & Response Generation:**
+- **Input & Response Generation:** Accepts user prompts and generates multiple diverse variations using controlled sampling strategies (powered by TinyLlama).
+- **Semantic Embedding Extraction:** Converts responses into high-dimensional vector embeddings using transformer-based models (`S-PubMedBert-MS-MARCO`). Captures contextual and semantic structure of generated text.
+- **Graph Construction:** Builds semantic similarity graphs using k-NN and threshold-based edge creation to model relationships between consistent and inconsistent responses.
+- **Graph Attention Network (GAT):** Applies attention-based graph neural networks to learn response reliability patterns and classify responses into correct, minor hallucination, moderate hallucination, or hallucinated categories.
+- **Explainable AI (XAI) Module / Interactive UI:** A modern React frontend that integrates semantic role labeling (SRL) and attention visualization, highlighting hallucinated spans and providing reasoning-level explanations.
 
-Accepts user prompts and LLM-generated responses.
+## 5. High-Level Architecture
 
-Generates multiple diverse variations using controlled sampling strategies.
+### Full-Stack Pipeline Overview
+- **Frontend (React + Vite):** A responsive, fast UI where users input queries and view live hallucination detection results and confidence scores.
+- **Backend API (Flask):** Handles model inference, live embedding generation, dynamic graph construction, and GAT classification.
+- **AI Models:** PyTorch Geometric (GAT), SentenceTransformers (Embeddings), and Hugging Face Pipelines (Generative LLM).
 
-**Semantic Embedding Extraction:**
+### Detection Pipeline
+1. **Stage 1 – Fact Extraction & Generation:** User prompt → TinyLlama generates diverse answers (or Semantic Role Labeling generates structured fact tuples).
+2. **Stage 2 – Similarity Graph Builder:** Embeddings via `S-PubMedBert` → k-NN Graph → Semantic edges based on cosine similarity thresholds.
+3. **Stage 3 – Graph Attention Classifier:** GAT-based hallucination classification model predicts the hallucination state and outputs probabilities.
 
-Converts responses into high-dimensional vector embeddings using transformer-based models.
+## 6. Dataset
 
-Captures contextual and semantic structure of generated text.
-
-**Graph Construction:**
-
-Builds semantic similarity graphs using k-NN and threshold-based edge creation.
-
-Models relationships between consistent and inconsistent responses.
-
-**Graph Attention Network (GAT):**
-
-Applies attention-based graph neural networks to learn response reliability patterns.
-
-Classifies responses into correct, partially correct, or hallucinated categories.
-
-**Explainable AI (XAI) Module:**
-
-Integrates semantic role labeling (SRL) and attention visualization.
-
-Highlights hallucinated spans and provides reasoning-level explanations.
-
-# **5. High-Level Architecture**
-**Pipeline Overview**
-
-**Input**
-LLM-generated text
-Optional reference knowledge sources
-
-Stage 1 – Fact Extraction Module
-Semantic Role Labeling (SRL) + structured fact tuple generation
-
-Stage 2 – Similarity Graph Builder
-Embedding → k-NN Graph → Semantic edges
-
-Stage 3 – Graph Attention Classifier
-GAT-based hallucination classification model
-
- # **Output**
-
-Hallucination probability score
-
-Highlighted factual inconsistencies
-
-Explanation heatmaps
-
-# **6. Dataset**
-
-The system generates its own dataset using controlled prompt-response generation.
-
-The dataset includes:
-
-Correct responses
-
-Partially correct responses
-
-Hallucinated responses
+The system generates its own dataset using controlled prompt-response generation. The dataset includes:
+- Correct responses
+- Partially correct responses
+- Hallucinated responses
 
 Stored in:
+- `data/processed/` (.csv, .json)
+- `data/raw/` (raw LLM outputs)
 
-data/processed/ (.csv, .json)
-
-data/raw/ (raw LLM outputs)
-
-# **7. Preprocessing Pipeline**
+## 7. Preprocessing Pipeline
 
 The following preprocessing steps are applied:
+- Response normalization and cleaning
+- Tokenization and sentence segmentation
+- Embedding generation using transformer encoders
+- Semantic similarity computation
 
-Response normalization and cleaning
+## 8. Model Components
 
-Tokenization and sentence segmentation
+- **Embedding Module:** Transformer-based encoders for semantic representation.
+- **Graph Module:** k-NN based semantic similarity graph construction.
+- **Classification Module:** Graph Attention Network (GAT) for hallucination prediction.
+- **Scoring Module:** White-box uncertainty scorer, SRL-based factual scorer, Ensemble fusion layer.
+- **Explainability Layer:** Highlighted hallucinated spans and attention-based interpretability visualization.
 
-Embedding generation using transformer encoders
+## 9. Installation & Setup
 
-Semantic similarity computation
+### Prerequisites
+- Python 3.8+
+- Node.js & npm (for the frontend)
+- PyTorch & CUDA-enabled GPU (recommended)
+- Virtualenv / Conda
 
-## **8. Model Components**
-Embedding Module
+### Backend Setup (Flask API)
+The backend hosts the PyTorch models and exposes the `/detect` and `/health` APIs.
 
-Transformer-based encoders for semantic representation.
-
-Graph Module
-
-k-NN based semantic similarity graph construction.
-
-Classification Module
-
-Graph Attention Network (GAT) for hallucination prediction.
-
-Scoring Module
-
-Black-box scorer
-
-White-box uncertainty scorer
-
-SRL-based factual scorer
-
-Ensemble fusion layer
-
-Explainability Layer
-
-Highlighted hallucinated spans
-
-Attention-based interpretability visualization
-
-# **9. Installation & Setup**
-Prerequisites
-
-Python 3.8+
-
-PyTorch
-
-CUDA-enabled GPU (recommended)
-
-Virtualenv / Conda
-
-Setup Steps
-
-# Create virtual environment (optional)
+```bash
+# 1. Navigate to the project root and create a virtual environment
 python -m venv .venv
 
-# Activate virtual environment
+# 2. Activate virtual environment
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
 
-# Install dependencies
+# 3. Install dependencies
 pip install -r requirements.txt
 
-Run the Application
-python main.py
+# 4. Start the Flask server
+cd backend
+python app.py
+```
+*Note: The backend will download the TinyLlama and SentenceTransformer models on the first run. The server runs on `http://localhost:5001`.*
 
-# **10. Future Work**
+### Frontend Setup (React App)
+The frontend provides the interactive user interface for hallucination detection.
 
-Integration of real-time web-based fact verification APIs
+```bash
+# 1. Open a new terminal and navigate to the frontend directory
+cd frontend
 
-White-box uncertainty modeling using token entropy
+# 2. Install Node.js dependencies
+npm install
 
-Cross-lingual hallucination detection
+# 3. Start the Vite development server
+npm run dev
+```
+*The React application will be available at `http://localhost:5173` (or the port specified by Vite).*
 
-Multimodal hallucination detection (text-image-video)
+## 10. Future Work
+- Integration of real-time web-based fact verification APIs.
+- White-box uncertainty modeling using token entropy.
+- Cross-lingual hallucination detection.
+- Multimodal hallucination detection (text-image-video).
+- Browser extension for real-time hallucination highlighting.
 
-Browser extension for real-time hallucination highlighting
+## 11. Acknowledgments
+- JUIT CSE Department
+- HuggingFace Model Hub
+- PyTorch Geometric Community
+- Open-source LLM research community
 
-# **11. Acknowledgments**
-
-JUIT CSE Department
-
-HuggingFace Model Hub
-
-PyTorch Geometric Community
-
-Open-source LLM research community
-
-# **12.Video Demonstration**
-
+## 12. Video Demonstration
 A live demonstration of our project, showcasing the data generation, graph construction, training, and evaluation processes, can be viewed here:
 
 [**Watch the Video Demonstration**](https://drive.google.com/file/d/1Gq3V_0q7QTH5RJBFS0X_nNW3Ckz_oRPG/view?usp=sharing)
 
-# **Research Papers:**
+## 13. Research Papers
 
-Arpita Rani: 1) [UQLM](https://arxiv.org/pdf/2507.06196v1): A Python Package for Uncertainty Quantification in
-Large Language Models.
-
-2) [Mitigating Hallucination in Visual Language Models with Visual Supervision](https://arxiv.org/abs/2311.16479)
-
-3) [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664)
-   
-4) [Hallucinations in Artificial Intelligence](https://www.ijsr.net/getabstract.php?paperid=SR241229170309)
- 
-5) [A Survey on Hallucination in Large Language Models](https://arxiv.org/abs/2311.05232)
-
-
-Rishal Rana: 1)[RAG-HAT](https://aclanthology.org/2024.emnlp-industry.113.pdf): A Hallucination-Aware Tuning Pipeline for LLM in
-Retrieval-Augmented Generation  
-
-
-Anand Chaudhary: 1)[Lookback Lens](https://arxiv.org/pdf/2407.07071): Detecting and Mitigating Contextual Hallucinations in
-Large Language Models Using Only Attention Maps.     
-                 2)A [Comprehensive Survey of Hallucination](https://arxiv.org/pdf/2405.09589) in Large Language, Image, Video and Audio Foundation Models
-
-
-Arnav Sharma: 1)[A Survey on Hallucination in Large Language Models](https://arxiv.org/pdf/2311.05232):
- Principles, Taxonomy, Challenges, and Open Questions.
-
-
-
-
- 
-
-
+For a complete list of the literature and research papers reviewed for this project, please see the [Literature Review & References](REFERENCES.md) document.
