@@ -1,6 +1,11 @@
 # Explainable Graph-Based Hallucination Detection for Large Language Models
 
-Rapid, accurate, and interpretable detection of hallucinated content in Large Language Model (LLM) outputs using graph learning, semantic analysis, and ensemble scoring.
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-Geometric-ee4c2c?logo=pytorch&logoColor=white)
+![React](https://img.shields.io/badge/React-Vite-61DAFB?logo=react&logoColor=black)
+![Flask](https://img.shields.io/badge/Flask-API-000000?logo=flask&logoColor=white)
+
+Rapid, accurate, and interpretable detection of hallucinated content in Large Language Model (LLM) outputs using graph learning and semantic analysis.
 
 ## 1. Project Overview
 
@@ -42,7 +47,7 @@ We propose a multi-layered hallucination detection framework consisting of the f
 - **Semantic Embedding Extraction:** Converts responses into high-dimensional vector embeddings using transformer-based models (`S-PubMedBert-MS-MARCO`). Captures contextual and semantic structure of generated text.
 - **Graph Construction:** Builds semantic similarity graphs using k-NN and threshold-based edge creation to model relationships between consistent and inconsistent responses.
 - **Graph Attention Network (GAT):** Applies attention-based graph neural networks to learn response reliability patterns and classify responses into correct, minor hallucination, moderate hallucination, or hallucinated categories.
-- **Explainable AI (XAI) Module / Interactive UI:** A modern React frontend that integrates semantic role labeling (SRL) and attention visualization, highlighting hallucinated spans and providing reasoning-level explanations.
+- **Explainable AI (XAI) Module / Interactive UI:** A modern React frontend that visualizes graph confidence and highlights hallucinated spans to provide transparent, reasoning-level explanations.
 
 ## 5. High-Level Architecture
 
@@ -52,16 +57,19 @@ We propose a multi-layered hallucination detection framework consisting of the f
 - **AI Models:** PyTorch Geometric (GAT), SentenceTransformers (Embeddings), and Hugging Face Pipelines (Generative LLM).
 
 ### Detection Pipeline
-1. **Stage 1 – Fact Extraction & Generation:** User prompt → TinyLlama generates diverse answers (or Semantic Role Labeling generates structured fact tuples).
+1. **Stage 1 – Response Generation:** User prompt → TinyLlama generates diverse, multi-perspective answers.
 2. **Stage 2 – Similarity Graph Builder:** Embeddings via `S-PubMedBert` → k-NN Graph → Semantic edges based on cosine similarity thresholds.
 3. **Stage 3 – Graph Attention Classifier:** GAT-based hallucination classification model predicts the hallucination state and outputs probabilities.
 
 ## 6. Dataset
 
-The system generates its own dataset using controlled prompt-response generation. The dataset includes:
-- Correct responses
-- Partially correct responses
-- Hallucinated responses
+The system generates its own synthetic evaluation dataset using queries derived from the **SQuAD (Stanford Question Answering Dataset)** format (specifically biomedical subsets). 
+
+Using the `document_generation.py` pipeline, the system feeds these SQuAD questions into a Large Language Model (`Llama-2-13b-orca`) with a specialized prompt. For every question, the model is instructed to generate:
+- **1 Correct response** (accurate statement)
+- **4 Hallucinated responses** (plausible but misleading distractors)
+
+This controlled prompt-response generation ensures a balanced mix of factual and hallucinated statements for the Graph Neural Network to learn from.
 
 Stored in:
 - `data/processed/` (.csv, .json)
@@ -80,8 +88,8 @@ The following preprocessing steps are applied:
 - **Embedding Module:** Transformer-based encoders for semantic representation.
 - **Graph Module:** k-NN based semantic similarity graph construction.
 - **Classification Module:** Graph Attention Network (GAT) for hallucination prediction.
-- **Scoring Module:** White-box uncertainty scorer, SRL-based factual scorer, Ensemble fusion layer.
-- **Explainability Layer:** Highlighted hallucinated spans and attention-based interpretability visualization.
+- **Scoring Module:** Graph-based consensus scoring compared against baseline evaluators (DBSCAN, SelfCheckGPT).
+- **Explainability Layer:** Highlighted hallucinated spans and interactive interpretability visualization.
 
 ## 9. Installation & Setup
 
@@ -126,8 +134,9 @@ npm run dev
 *The React application will be available at `http://localhost:5173` (or the port specified by Vite).*
 
 ## 10. Future Work
+- **Semantic Role Labeling (SRL):** Integrating structured fact extraction directly into the graph.
+- **Ensemble Fusion:** Adding LLM-as-a-judge and white-box uncertainty modeling (token entropy) alongside the GAT.
 - Integration of real-time web-based fact verification APIs.
-- White-box uncertainty modeling using token entropy.
 - Cross-lingual hallucination detection.
 - Multimodal hallucination detection (text-image-video).
 - Browser extension for real-time hallucination highlighting.
